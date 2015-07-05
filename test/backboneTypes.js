@@ -1,6 +1,6 @@
     var Nested = require( '../src/main' ),
         expect = require( 'chai' ).expect,
-        _ = require( 'underscore' ),
+        _ = require( 'lodash' ),
         sinon = require( 'sinon' );
 
     describe( 'Nested Models and Collections', function(){

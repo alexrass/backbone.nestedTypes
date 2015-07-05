@@ -4,7 +4,7 @@
 var bbVersion  = require( 'backbone' ).VERSION,
     attribute  = require( './attribute' ),
     Collection = require( './collection' ),
-    _          = require( 'underscore' );
+    _          = require( 'lodash' );
 
 function parseReference( collectionRef ){
     switch( typeof collectionRef ){
@@ -13,7 +13,7 @@ function parseReference( collectionRef ){
     case 'object'   :
         return function(){ return collectionRef; };
     case 'string'   :
-        return new Function( 'return this.' + collectionRef );
+        return function() { return _.get( this, collectionRef ); };
     }
 }
 

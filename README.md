@@ -6,7 +6,7 @@ develop: [![Develop Build Status](https://travis-ci.org/Volicon/backbone.nestedT
 Version 1.0.0 is here. Highlights:
 
 - New .has type specs syntax
-- Huge performance improvement over vanilla backbonejs. Model updates are 4x faster in most browsers (20x faster in Chrome and nodejs). 
+- Huge performance improvement over vanilla backbonejs. Model updates are 4x faster in most browsers (20x faster in Chrome and nodejs).
 
 Browse complete documentation here: http://volicon.github.io/backbone.nestedTypes/
 
@@ -91,7 +91,7 @@ var Nested = require( 'nestedtypes' );
 ```
 
 > CommonJS/AMD (RequireJS).
-> 'backbone' and 'underscore' modules must be defined in config paths.
+> 'backbone' and 'lodash' modules must be defined in config paths.
 
 ```javascript
 require([ 'nestedtypes' ], function( Nested ){ ... });
@@ -100,7 +100,7 @@ require([ 'nestedtypes' ], function( Nested ){ ... });
 > Browser's script tag
 
 ```html
-<script src="underscore.js" type="text/javascript"></script>
+<script src="lodash.js" type="text/javascript"></script>
 <script src="backbone.js" type="text/javascript"></script>
 <script src="nestedtypes.js" type="text/javascript"></script>
 <script> var Model = Nested.Model; ... </script>
@@ -117,7 +117,7 @@ of all browsers being used for accessing the web.
 
 NestedTypes itself is packaged as UMD (Universal Module Definition) module, and should load dependencies properly in any environment.
 
-NestedTypes require `underscore` and `backbone` libraries. They either must be included globally with `<script>`tag or, if `CommonJS`/`AMD` loaders are used, be accessible by their standard module names.  
+NestedTypes require `lodash` and `backbone` libraries. They either must be included globally with `<script>`tag or, if `CommonJS`/`AMD` loaders are used, be accessible by their standard module names.
 
 ### bower
 

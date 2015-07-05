@@ -1,28 +1,3 @@
-/**
- * Backbone.NestedTypes 1.0.0 <https://github.com/Volicon/backbone.nestedTypes>
- * (c) 2015 Vlad Balin & Volicon
- * Released under MIT @license
- */
-
-/**
- * Date.parse with progressive enhancement for ISO 8601 <https://github.com/csnover/js-iso8601>
- * © 2011 Colin Snover <http://zetafleet.com>
- * Released under MIT @license
- */
-(function(root, factory) {
-    if(typeof exports === 'object') {
-        module.exports = factory(require('lodash'), require('backbone'));
-    }
-    else if(typeof define === 'function' && define.amd) {
-        define(['lodash', 'backbone'], factory);
-    }
-    else {
-        root.Nested = factory(root._, root.Backbone);
-    }
-}(this, function( _, Backbone ) {
-    var require = function(name) {
-        return { lodash: _, backbone : Backbone }[name];
-    };
 require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 // Options wrapper for chained and safe type specs...
 // --------------------------------------------------
@@ -1791,5 +1766,3 @@ Object.assign( exports, {
     }
 });
 },{"./attribute":1,"./collection":3,"./errors":4,"./metatypes":5,"./model":6,"./object+":8,"./relations":9,"./store":10}]},{},[]);
-    return require('nestedtypes');
-}))

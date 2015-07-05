@@ -20,7 +20,7 @@
 // 1) Code is stripped for this special case
 // 2) attribute-specific transform function invoked internally
 
-var _        = require( 'underscore' ),
+var _        = require( 'lodash' ),
     Events   = require( './backbone+' ).Events,
     error    = require( './errors' ),
     trigger2 = Events.trigger2,

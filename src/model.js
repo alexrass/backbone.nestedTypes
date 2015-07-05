@@ -2,7 +2,7 @@ var BaseModel   = require( './backbone+' ).Model,
     modelSet    = require( './modelset' ),
     attrOptions = require( './attribute' ),
     error       = require( './errors' ),
-    _           = require( 'underscore' ),
+    _           = require( 'lodash' ),
     ModelProto  = BaseModel.prototype;
 
 var setSingleAttr = modelSet.setSingleAttr,
@@ -199,7 +199,7 @@ var Model = BaseModel.extend( {
             } );
     },
 
-    _ : _ // add underscore to be accessible in templates
+    _ : _ // add lodash to be accessible in templates
 }, {
     // shorthand for inline nested model definitions
     defaults : function( attrs ){ return this.extend( { defaults : attrs } ); },
@@ -267,34 +267,37 @@ function createDefinition( protoProps, Base ){
 // Create attributes 'parse' option function only if local 'parse' options present.
 // Otherwise return null.
 function create_parse( allAttrSpecs, attrSpecs ){
-    var statements = [ 'var a = this.__attributes;' ],
-        create = false;
+    var create = false;
 
     for( var name in allAttrSpecs ){
-        // Is there any 'parse' option in local model definition?
-        if( attrSpecs[ name ] && attrSpecs[ name ].parse ) create = true;
-
-        // Add statement for each attribute with 'parse' option.
-        if( allAttrSpecs[ name ].parse ){
-            var s = 'if("' + name + '" in r) r.' + name + '=a.' + name + '.parse.call(this,r.' + name + ',"' + name + '");';
-            statements.push( s );
-        }
+      if( attrSpecs[ name ] && attrSpecs[ name ].parse ){
+        create = true;
+      }
     }
 
-    statements.push( 'return r;' );
+    var Func = function( r ) {
+      var a = this.__attributes;
 
-    return create ? new Function( 'r', statements.join( '' ) ) : null;
+      for( var name in allAttrSpecs ) {
+        if( allAttrSpecs[ name ].parse && name in r ) {
+          r[ name ] = a[ name ].parse.call( this, r[ name ], name );
+        }
+      }
+
+      return r;
+    };
+
+
+    return create ? Func : null;
 }
 
 // Create constructor for efficient attributes clone operation.
 function createCloneCtor( attrSpecs ){
-    var statements = [];
-
-    for( var name in attrSpecs ){
-        statements.push( "this." + name + "=x." + name + ";" );
-    }
-
-    var Attributes = new Function( "x", statements.join( '' ) );
+    var Attributes = function(x){
+      for( var name in attrSpecs ){
+        this[ name ] = x[ name ];
+      }
+    };
 
     // attributes hash must look like vanilla object, otherwise Model.set will trigger an exception
     Attributes.prototype = Object.prototype;
@@ -327,35 +330,36 @@ function isValidJSON( value ){
 
 // Create optimized model.defaults( attrs, options ) function
 function createDefaults( attrSpecs ){
-    var statements = [], init = {}, refs = {};
+    var init = {}, refs = {};
 
-    // Compile optimized constructor function for efficient deep copy of JSON literals in defaults.
-    _.each( attrSpecs, function( attrSpec, name ){
-        if( attrSpec.value === undefined && attrSpec.type ){
-            // if type with no value is given, create an empty object
-            init[ name ] = attrSpec;
-            statements.push( 'this.' + name + '=i.' + name + '.create( o );' );
-        }
-        else{
-            // If value is given, type casting logic will do the job later, converting value to the proper type.
-            if( isValidJSON( attrSpec.value ) ){
-                // JSON literals must be deep copied.
-                statements.push( 'this.' + name + '=' + JSON.stringify( attrSpec.value ) + ';' );
-            }
-            else if( attrSpec.value === undefined ){
-                // handle undefined value separately. Usual case for model ids.
-                statements.push( 'this.' + name + '=undefined;' );
+    var Defaults = function(r, i, o) {
+        // Compile optimized constructor function for efficient deep copy of JSON literals in defaults.
+        _.each( attrSpecs, function( attrSpec, name ){
+            if( attrSpec.value === undefined && attrSpec.type ){
+                // if type with no value is given, create an empty object
+                init[ name ] = attrSpec;
+                this[ name ] = i[ name ].create( o );
             }
             else{
-                // otherwise, copy value by reference.
-                refs[ name ] = attrSpec.value;
-                statements.push( 'this.' + name + '=r.' + name + ';' );
+                // If value is given, type casting logic will do the job later, converting value to the proper type.
+                if( isValidJSON( attrSpec.value ) ){
+                    // JSON literals must be deep copied.
+                    this[ name ] = _.cloneDeep( attrSpec.value );
+                }
+                else if( attrSpec.value === undefined ){
+                    // handle undefined value separately. Usual case for model ids.
+                    this[ name ] = undefined;
+                }
+                else{
+                    // otherwise, copy value by reference.
+                    refs[ name ] = attrSpec.value;
+                    this[ name ] = r[ name ];
+                }
+
             }
+        }, this );
+    };
 
-        }
-    } );
-
-    var Defaults = new Function( 'r', 'i', 'o', statements.join( '' ) );
     Defaults.prototype = Object.prototype;
 
     // Create model.defaults( attrs, options ) function

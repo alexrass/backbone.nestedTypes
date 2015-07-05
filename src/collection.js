@@ -1,7 +1,7 @@
 var Backbone = require( './backbone+' ),
     Model    = require( './model' ),
     error    = require( './errors' ),
-    _        = require( 'underscore' );
+    _        = require( 'lodash' );
 
 var CollectionProto = Backbone.Collection.prototype;
 
