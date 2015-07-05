@@ -35,7 +35,7 @@
     "nestedtypes.min.js"
   ],
   "license": "MIT",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "scripts": {
     "test": "node_modules/.bin/mocha",
     "minify:win": ".\\node_modules\\.bin\\uglifyjs nestedtypes.js --comments --compress --mangle --screw-ie8 > nestedtypes.min.js & .\\node_modules\\.bin\\uglifyjs .\\chaplinjs\\nestedtypes.js --comments --compress --mangle --screw-ie8 > .\\chaplinjs\\nestedtypes.min.js",
